@@ -1,35 +1,79 @@
 // ===================================================================
-// build.gradle (nivel de PROYECTO, no del módulo "app")
-// Este archivo configura los plugins y repositorios que se comparten
-// entre todos los módulos del proyecto (en este caso, solo "app").
+// build.gradle (nivel de MÓDULO "app")
+// Aquí se configura específicamente cómo se compila la app:
+// SDK objetivo, nombre del paquete, dependencias (librerías), etc.
 // ===================================================================
 
-// "buildscript" define qué plugins y dependencias necesita el propio
-// sistema de construcción (Gradle) para poder compilar el proyecto.
-buildscript {
-    // Repositorios donde Gradle buscará los plugins.
-    repositories {
-        google()        // Repositorio de Google (necesario para el plugin de Android)
-        mavenCentral()  // Repositorio central de Maven (librerías Java/Kotlin)
+// Aplicamos el plugin de Android para aplicaciones (no librerías)
+apply plugin: 'com.android.application'
+
+android {
+    // Namespace / paquete base de la aplicación
+    namespace 'com.example.mispeliculas'
+
+    // Versión del SDK de Android usada para compilar (Android 14)
+    compileSdk 34
+
+    defaultConfig {
+        // Identificador único de la app en el dispositivo / Play Store
+        applicationId "com.example.mispeliculas"
+
+        // Versión mínima de Android soportada (Android 7.0 Nougat)
+        minSdk 24
+
+        // Versión de Android para la que está "pensada" y probada la app
+        targetSdk 34
+
+        // Código interno de versión (se incrementa en cada publicación)
+        versionCode 1
+
+        // Nombre de versión visible para el usuario
+        versionName "1.0"
+
+        // Runner usado para pruebas instrumentadas (no usamos tests aquí,
+        // pero se deja configurado por convención de Android Studio)
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    dependencies {
-        // Plugin de Android Gradle (AGP): permite compilar apps Android.
-        classpath 'com.android.tools.build:gradle:8.2.2'
+
+    buildTypes {
+        release {
+            // No minificamos (ofuscamos) el código en esta versión académica
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // Configuración del lenguaje Java usado en el proyecto
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Habilita "view binding" NO se usa aquí (usamos findViewById clásico
+    // a propósito, para que el código sea más fácil de entender en un
+    // trabajo final de curso), pero dejamos buildFeatures por si se desea activar.
+    buildFeatures {
+        viewBinding false
     }
 }
 
-// NOTA IMPORTANTE:
-// Ya NO se declara aquí un bloque "allprojects { repositories {...} } }"
-// porque los repositorios de los módulos (app, etc.) ahora se gestionan
-// de forma centralizada en settings.gradle, dentro de
-// "dependencyResolutionManagement". Declarar repositorios en dos lugares
-// a la vez (aquí y en settings.gradle) provoca el error:
-//   "Build was configured to prefer settings repositories over project
-//    repositories but repository 'Google' was added by build file..."
-// Por eso este archivo SOLO configura el "buildscript" (necesario para
-// resolver el propio plugin de Android), y nada más.
+dependencies {
+    // ---------- Librerías básicas de AndroidX / Material ----------
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-// Tarea auxiliar para limpiar la carpeta "build" con "./gradlew clean"
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    // ---------- RecyclerView (listas eficientes) ----------
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+
+    // ---------- Fragmentos (Fragment + comunicación con Activity) ----------
+    implementation 'androidx.fragment:fragment:1.6.2'
+
+    // ---------- Retrofit: consumo de API REST ----------
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    // Convertidor Gson: transforma el JSON de la API en objetos Java automáticamente
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // ---------- SwipeRefreshLayout (opcional, mejora UX) ----------
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 }
