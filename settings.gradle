@@ -1,0 +1,27 @@
+// ===================================================================
+// settings.gradle
+// Le dice a Gradle qué módulos forman parte de este proyecto.
+// En nuestro caso solo tenemos un módulo llamado "app".
+// ===================================================================
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Nombre visible del proyecto en Android Studio
+rootProject.name = "MisPeliculas"
+
+// Incluimos el módulo de la aplicación
+include ':app'

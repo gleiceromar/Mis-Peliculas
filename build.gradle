@@ -1,0 +1,35 @@
+// ===================================================================
+// build.gradle (nivel de PROYECTO, no del módulo "app")
+// Este archivo configura los plugins y repositorios que se comparten
+// entre todos los módulos del proyecto (en este caso, solo "app").
+// ===================================================================
+
+// "buildscript" define qué plugins y dependencias necesita el propio
+// sistema de construcción (Gradle) para poder compilar el proyecto.
+buildscript {
+    // Repositorios donde Gradle buscará los plugins.
+    repositories {
+        google()        // Repositorio de Google (necesario para el plugin de Android)
+        mavenCentral()  // Repositorio central de Maven (librerías Java/Kotlin)
+    }
+    dependencies {
+        // Plugin de Android Gradle (AGP): permite compilar apps Android.
+        classpath 'com.android.tools.build:gradle:8.2.2'
+    }
+}
+
+// NOTA IMPORTANTE:
+// Ya NO se declara aquí un bloque "allprojects { repositories {...} } }"
+// porque los repositorios de los módulos (app, etc.) ahora se gestionan
+// de forma centralizada en settings.gradle, dentro de
+// "dependencyResolutionManagement". Declarar repositorios en dos lugares
+// a la vez (aquí y en settings.gradle) provoca el error:
+//   "Build was configured to prefer settings repositories over project
+//    repositories but repository 'Google' was added by build file..."
+// Por eso este archivo SOLO configura el "buildscript" (necesario para
+// resolver el propio plugin de Android), y nada más.
+
+// Tarea auxiliar para limpiar la carpeta "build" con "./gradlew clean"
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
